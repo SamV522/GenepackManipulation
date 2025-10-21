@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+    <WorkGiverDef>
+        <defName>GenepackManipulationWorkGiver</defName>
+        <giverClass>GenepackRefinement.Jobs.GenepackManipulationWorkGiver</giverClass>
+        <workType>Research</workType> <!-- This is the missing piece -->
+        <priorityInType>50</priorityInType>
+        <verb>manipulate genepack</verb>
+        <gerund>manipulate</gerund>
+    </WorkGiverDef>
+</Defs>

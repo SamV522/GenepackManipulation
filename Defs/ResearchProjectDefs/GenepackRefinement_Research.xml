@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+    <!-- Industrial Level Pruning -->
+    <ResearchProjectDef>
+        <defName>GenePruning</defName>
+        <label>gene pruning</label>
+        <description>Prune undesired genes from genepacks. Requries Glitterworld Medicine.</description>
+        <tab>GenepackRefinementTab</tab>
+        <techLevel>Spacer</techLevel>
+        <baseCost>1200</baseCost>
+        <researchViewX>0.00</researchViewX>
+        <researchViewY>0.00</researchViewY>
+        <prerequisites>
+            <li>Xenogermination</li>
+        </prerequisites>
+        <generalRules>
+            <rulesStrings>
+            <li>subject->gene pruning</li>
+            
+            <li>subject_story->carefully removed unstable sequences from a primitive genepack</li>
+            <li>subject_story->experimented with crude sequencing techniques</li>
+            <li>subject_story->observed the instability of Archite-level genes under simple pruning</li>
+            <li>subject_story->reduced unwanted genes from a fragile genepack</li>
+            
+            <li>subject_gerund->pruning genepacks</li>
+            </rulesStrings>
+        </generalRules>
+    </ResearchProjectDef>
+
+    <!-- Ultra Level Archite Splitting -->
+    <ResearchProjectDef>
+        <defName>GeneSplitting</defName>
+        <label>gene splitting</label>
+        <description>Split genes from within a genepack into a new genepack. Requires Glitterworld Medicine.</description>
+        <tab>GenepackRefinementTab</tab>
+        <techLevel>Ultra</techLevel>
+        <baseCost>2000</baseCost>
+        <researchViewX>2.0</researchViewX>
+        <researchViewY>0.0</researchViewY>
+        <prerequisites>
+            <li>GenePruning</li>
+        </prerequisites>
+        <requiredResearchBuilding>HiTechResearchBench</requiredResearchBuilding>
+        <requiredResearchFacilities>
+            <li>MultiAnalyzer</li>
+        </requiredResearchFacilities>
+        <generalRules>
+            <rulesStrings>
+                <li>subject->gene refinement</li>
+
+                <li>subject_story->carefully separated genes, preserving delicate Archite sequences</li>
+                <li>subject_story->utilized advanced refinement methods for precise gene isolation</li>
+                <li>subject_story->successfully split multi-gene packs with minimal loss</li>
+                <li>subject_story->managed Archite gene manipulation sequences with advanced sequencing enzymes</li>
+
+                <li>subject_gerund->refining genepacks</li>
+            </rulesStrings>
+        </generalRules>
+    </ResearchProjectDef>
+
+</Defs>
