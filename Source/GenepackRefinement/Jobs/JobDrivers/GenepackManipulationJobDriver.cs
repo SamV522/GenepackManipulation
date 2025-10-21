@@ -1,7 +1,6 @@
 ﻿using GenepackRefinement.Components.Things;
 using GenepackRefinement.Jobs.Data;
 using RimWorld;
-using System;
 using System.Collections.Generic;
 using Verse;
 using Verse.AI;
@@ -10,26 +9,17 @@ namespace GenepackRefinement.Jobs
 {
     internal class GenepackManipulationJobDriver : JobDriver
     {
-        private Building_GeneAssembler Assembler => (Building_GeneAssembler) job.targetB.Thing;
-        private GenepackManipulatorComponent Comp => Assembler.TryGetComp<GenepackManipulatorComponent>();
-        private Thing Genepack => job.targetA.Thing;
-        private GenepackManipulationJobData JobData => Comp?.GetJob();
-
         public override bool TryMakePreToilReservations(bool errorOnFailed)
         {
-            bool reserved = pawn.Reserve(Assembler, job, 1, -1, null, errorOnFailed)
-                          && pawn.Reserve(Genepack, job, 1, -1, null, errorOnFailed);
-
-            if (JobData?.RequiredIngredients != null)
+            if (TargetA == null || TargetA.Thing == null)
             {
-                foreach (var req in JobData.RequiredIngredients)
-                {
-                    Thing ingredient = FindClosestIngredient(req.thingDef, req.count);
-                    if (ingredient == null || !pawn.Reserve(ingredient, job, 1, -1, null, errorOnFailed))
-                        return false;
-                }
+                Log.Error("[GenepackRefinement] TargetA or TargetA.Thing is null during reservation.");
+                return false;
             }
 
+
+            bool reserved = pawn.Reserve(TargetA, job, 1, -1, null, errorOnFailed);
+            
             if (pawn.skills?.GetSkill(SkillDefOf.Intellectual)?.Level < 10)
                 return false;
 
@@ -38,45 +28,88 @@ namespace GenepackRefinement.Jobs
 
         protected override IEnumerable<Toil> MakeNewToils()
         {
+            Messages.Message("Goto job", MessageTypeDefOf.NeutralEvent);
+            if(TargetA.Thing == null)
+            {
+                Log.Error("TargetA is null!");
+                yield break;
+            }
+            Log.Message("Creating goto toil");
             yield return Toils_Goto.GotoThing(TargetIndex.A, PathEndMode.InteractionCell);
 
+            GenepackManipulatorComponent comp = TargetA.Thing.TryGetComp<GenepackManipulatorComponent>();
+            if (comp == null)
+            {
+                Log.Error("GenepackManipulatorComponent not found!");
+                yield break;
+            }
+
+            GenepackManipulationJobData jobData = comp.GetJob();
+            if (jobData == null)
+            {
+                Log.Error("No job assigned to GenepackManipulatorComponent!");
+                yield break;
+            }
+
+            if (pawn == null)
+            {
+                Log.Error("Pawn is null!");
+                yield break;
+            }
+
+            if (pawn.skills == null)
+            {
+                Log.Error("Pawn has no skills!");
+                yield break;
+            }
+
+            Messages.Message("Starting work toil", MessageTypeDefOf.NeutralEvent);
+
+            Log.Message("Creating work toil");
+            Log.Message("Job will require "+ jobData.ticksRequired +" ticks");
             var workToil = new Toil
             {
-                activeSkill = () => SkillDefOf.Intellectual,
-                initAction = () => ticksLeftThisToil = JobData.ticksRequired,
-                tickAction = () =>
-                {
-                    JobData.ticksWorked++;
-                    pawn.skills?.Learn(SkillDefOf.Intellectual, 0.1f);
-                },
-                finishActions = { () =>
+                initAction = () =>
                     {
-                        if (JobData.isPrune)
-                            Comp.ExecutePrune();
-                        else
-                            Comp.ExecuteSplit();
-                    }
-                },
-                defaultCompleteMode = ToilCompleteMode.Delay
+                        Log.Message("Init action");
+                    },
+                defaultCompleteMode = ToilCompleteMode.Delay,
+                defaultDuration = jobData.ticksRequired
             };
 
-            workToil.WithProgressBar(TargetIndex.A, () => (float)JobData.ticksWorked / JobData.ticksRequired)
-                    .WithEffect(EffecterDefOf.GeneAssembler_Working, TargetIndex.A);
-            
-            yield return workToil;
-        }
+            workToil.tickAction = () =>
+            {
+                pawn.skills.Learn(SkillDefOf.Intellectual, 0.1f);
+                jobData.ticksWorked++;
+                if (jobData.ticksWorked >= jobData.ticksRequired)
+                {
+                    Log.Message("Work toil completed");
+                    workToil.actor.jobs.curDriver.ReadyForNextToil();
+                }
+            };
 
-        private Thing FindClosestIngredient(ThingDef def, int minCount)
-        {
-            return GenClosest.ClosestThingReachable(
-                pawn.Position,
-                pawn.Map,
-                ThingRequest.ForDef(def),
-                PathEndMode.Touch,
-                TraverseParms.For(pawn),
-                9999f,
-                t => t.stackCount >= minCount && !t.IsForbidden(pawn)
-            );
+            workToil.AddFinishAction(() =>
+            {
+               if (jobData.isPrune)
+               {
+                   comp.ExecutePrune();
+               }
+               else
+               {
+                   comp.ExecuteSplit();
+                }
+            });
+
+            Log.Message("Created work toil");
+
+            Log.Message("using progress bar");
+
+            workToil.WithProgressBar(TargetIndex.A, () => (float)jobData.ticksWorked / jobData.ticksRequired)
+                    .WithEffect(EffecterDefOf.GeneAssembler_Working, TargetIndex.A)
+                    .FailOnDespawnedNullOrForbidden(TargetIndex.A);
+            
+            Log.Message("Yielding work toil");
+            yield return workToil;
         }
     }
 }

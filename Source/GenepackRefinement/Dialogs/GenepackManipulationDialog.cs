@@ -1,6 +1,7 @@
 ﻿using GenepackRefinement.Components.Things;
 using GenepackRefinement.Jobs.Data;
 using RimWorld;
+using RimWorld.Planet;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -97,6 +98,9 @@ namespace GenepackRefinement.Dialogs
                     };
 
                     genepackManipulatorComponent.SetJob(jobData);
+
+                    Messages.Message(genepackManipulatorComponent.NeedsIngredients().ToString(), MessageTypeDefOf.NeutralEvent);
+                    Messages.Message(string.Join(",", genepackManipulatorComponent.RequiredIngredients().Select(ing => ing.Label +" x "+ing.count).ToList()), MessageTypeDefOf.NeutralEvent);
 
                     Close();
                 }

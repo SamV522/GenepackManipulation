@@ -8,9 +8,9 @@ namespace GenepackRefinement.Jobs.Data
     public class GenepackManipulationJobData
     {
         public Genepack genepack;
-        public int ticksWorked;
-        public int ticksRequired;
-        public bool isPrune;
+        public int ticksWorked = 0;
+        public int ticksRequired = 0;
+        public bool isPrune = false;
         public string uniqueID = Guid.NewGuid().ToString();
         public List<ThingDefCountClass> RequiredIngredients;
     }

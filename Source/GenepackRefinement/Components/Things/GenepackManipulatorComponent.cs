@@ -61,10 +61,11 @@ namespace GenepackRefinement.Components.Things
                 {
                     defaultLabel = "Cancel Genepack Manipulation",
                     defaultDesc = "Cancel the current genepack manipulation job.",
-                    icon = ContentFinder<Texture2D>.Get("Cancel"),
+                    //icon = ContentFinder<Texture2D>.Get("Cancel"), // ffs, find the fucking cancel icon, dammit.
                     action = () =>
                     {
                         ClearJob();
+                        assembler.innerContainer.TryDropAll(assembler.InteractionCell, assembler.Map, ThingPlaceMode.Near);
                         Messages.Message("Genepack manipulation job cancelled.", MessageTypeDefOf.NegativeEvent);
                     }
                 };
@@ -88,13 +89,13 @@ namespace GenepackRefinement.Components.Things
 
         public void ExecutePrune()
         {
-            activeJob = null;
+            //activeJob = null;
             Messages.Message("Genepack pruned successfully.", MessageTypeDefOf.PositiveEvent);
         }
 
         public void ExecuteSplit()
         {
-            activeJob = null;
+            //activeJob = null;
             Messages.Message("Genepack split successfully.", MessageTypeDefOf.PositiveEvent);
         }
 
