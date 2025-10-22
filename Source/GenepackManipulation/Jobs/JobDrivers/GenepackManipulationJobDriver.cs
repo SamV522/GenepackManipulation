@@ -49,24 +49,12 @@ namespace GenepackManipulation.Jobs
                 yield break;
             }
 
-            if (pawn == null)
-            {
-                Log.Error("Pawn is null!");
-                yield break;
-            }
-
-            if (pawn.skills == null)
-            {
-                Log.Error("Pawn has no skills!");
-                yield break;
-            }
-
             Toil workToil = new Toil();
 
             workToil.tickIntervalAction = delta =>
             {
                 jobData.TicksElapsed += delta;
-                pawn.skills.Learn(SkillDefOf.Intellectual, 0.1f * (float)delta);
+                pawn.skills?.Learn(SkillDefOf.Intellectual, 0.1f * (float)delta);
                 pawn.GainComfortFromCellIfPossible(delta, chairsOnly: true);
 
                 if (workToil.defaultDuration <= jobData.TicksElapsed)
