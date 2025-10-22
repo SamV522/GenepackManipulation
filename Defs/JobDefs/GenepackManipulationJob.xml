@@ -2,7 +2,7 @@
 <Defs>
     <JobDef>
     <defName>GenepackManipulation</defName>
-    <driverClass>GenepackRefinement.Jobs.GenepackManipulationJobDriver</driverClass>
+    <driverClass>GenepackManipulation.Jobs.GenepackManipulationJobDriver</driverClass>
     <reportString>Manipulating genepack...</reportString>
     </JobDef>
 </Defs>

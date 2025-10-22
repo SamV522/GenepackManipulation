@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+    <ResearchTabDef>
+    <defName>GenepackManipulationTab</defName>
+    <label>Genepack Manipulation</label>
+    <generalTitle>Genepack Manipulation research projects</generalTitle>
+    <generalDescription>Take control of genepacks like never before.</generalDescription>
+    </ResearchTabDef>
+</Defs>

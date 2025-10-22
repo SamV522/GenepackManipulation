@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<Defs>
-    <ResearchTabDef>
-    <defName>GenepackRefinementTab</defName>
-    <label>Genepack Refinement</label>
-    <generalTitle>Genepack Refinement research projects</generalTitle>
-    <generalDescription>Take control of genepacks like never before.</generalDescription>
-    </ResearchTabDef>
-</Defs>

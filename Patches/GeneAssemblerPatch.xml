@@ -3,7 +3,7 @@
   <Operation Class="PatchOperationAdd">
     <xpath>/Defs/ThingDef[defName="GeneAssembler"]/comps</xpath>
     <value>
-      <li Class="GenepackRefinement.Components.Things.CompProperties_GenepackManipulator"/>
+      <li Class="GenepackManipulation.Components.Things.CompProperties_GenepackManipulator"/>
     </value>
   </Operation>
 </Patch>

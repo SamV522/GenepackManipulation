@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ModMetaData>
-<packageId>SamV522.GenepackRefinement</packageId>
-<name>Genepack Refinement</name>
+<packageId>SamV522.GenepackManipulation</packageId>
+<name>Genepack Manipulation</name>
 <author>SamV522</author>
 <description>
 Adds a tiered system for manipulating genepacks, allowing colonists to prune and split genepacks with lore friendly mechanics and research tiers.

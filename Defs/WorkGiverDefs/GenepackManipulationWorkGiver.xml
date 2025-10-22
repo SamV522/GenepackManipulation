@@ -2,10 +2,10 @@
 <Defs>
     <WorkGiverDef>
         <defName>GenepackManipulationWorkGiver</defName>
-        <giverClass>GenepackRefinement.Jobs.GenepackManipulationWorkGiver</giverClass>
+        <giverClass>GenepackManipulation.Jobs.GenepackManipulationWorkGiver</giverClass>
         <workType>Research</workType> <!-- This is the missing piece -->
-        <priorityInType>120</priorityInType>
+        <priorityInType>130</priorityInType>
         <verb>manipulating genepack</verb>
-        <gerund>manipulate genepack at</gerund>
+        <gerund>manipulating genepack at</gerund>
     </WorkGiverDef>
 </Defs>
