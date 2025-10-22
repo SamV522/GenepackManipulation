@@ -54,7 +54,11 @@ namespace GenepackManipulation.Jobs
             workToil.tickIntervalAction = delta =>
             {
                 jobData.TicksElapsed += delta;
-                pawn.skills?.Learn(SkillDefOf.Intellectual, 0.1f * (float)delta);
+
+                // Null check for mechanoids or other cases where the pawn may not have skills
+                if(pawn.skills != null)
+                    pawn.skills?.Learn(SkillDefOf.Intellectual, 0.1f * (float)delta);
+
                 pawn.GainComfortFromCellIfPossible(delta, chairsOnly: true);
 
                 if (workToil.defaultDuration <= jobData.TicksElapsed)
