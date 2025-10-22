@@ -50,7 +50,13 @@ namespace GenepackManipulation.Dialogs
             float packHeight = 100f;
             float verticalSpacing = 18f;
 
-            foreach (Genepack genepack in _assembler.GetGenepacks(true, true).Where(genepack => genepack.GeneSet.GenesListForReading.Count > 1))
+            IEnumerable<Genepack> genepacks = _assembler.GetGenepacks(true, true)
+                                                        .Where(genepack => genepack.GeneSet.GenesListForReading.Count > 1)
+                                                        .OrderByDescending(genepack => genepack.GeneSet.ArchitesTotal)
+                                                        .ThenByDescending(genepack => genepack.GeneSet.ComplexityTotal)
+                                                        .ThenBy(genepack => genepack.GeneSet.MetabolismTotal);
+
+            foreach (Genepack genepack in genepacks)
             {
                 packWidth = (float)(34.0 + (double)GeneCreationDialogBase.GeneSize.x * (double)genepack.GeneSet.GenesListForReading.Count + 4.0 * (double)(genepack.GeneSet.GenesListForReading.Count + 2));
                 Rect packRect = new Rect(curX, curY, packWidth, packHeight);
