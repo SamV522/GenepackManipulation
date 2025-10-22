@@ -21,7 +21,17 @@ namespace GenepackRefinement.Jobs
             var comp = assembler.TryGetComp<GenepackManipulatorComponent>();
             if (!comp.CanManipulateNow() || !comp.HasJob()) return false;
 
+            var jobData = comp.GetJob();
+            if (jobData == null) return false;
+
             if (!pawn.CanReserve(t, 1, -1, null, forced)) return false;
+
+            // try to reserve the genepack as well
+            if (!pawn.CanReserve(jobData.Genepack, 1, -1, null, true))
+            {
+                Log.Warning($"[GenepackRefinement] Pawn {pawn} cannot reserve genepack {jobData.Genepack}. Cannot assign GenepackManipulation job.");
+                return false;
+            }
 
             if (t.IsForbidden(pawn)) return false;
             if (t.IsBurning()) return false;
@@ -43,8 +53,18 @@ namespace GenepackRefinement.Jobs
                 Log.Error($"[GenepackRefinement] No current job found for assembler {assembler}. Cannot create GenepackManipulation job.");
                 return null;
             }
-            Genepack genepack = compJob.genepack;
 
+            
+            if (!assembler.innerContainer.Contains(compJob.Genepack))
+            {
+                if (compJob.Genepack.ParentHolder is CompGenepackContainer genebank)
+                {
+                    genebank.innerContainer.TryDrop(compJob.Genepack, genebank.parent.InteractionCell, genebank.parent.Map, ThingPlaceMode.Near, out _);
+                    Job job = JobMaker.MakeJob(JobDefOf.HaulToContainer, compJob.Genepack, (LocalTargetInfo) t);
+                    job.count = 1;
+                    return job;
+                }
+            }
 
             // Take the required ingredients to the assembler
             if (comp.NeedsIngredients())

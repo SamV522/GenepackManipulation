@@ -1,5 +1,5 @@
-﻿using RimWorld;
-using System;
+﻿using GenepackRefinement.Manipulations;
+using RimWorld;
 using System.Collections.Generic;
 using Verse;
 
@@ -7,11 +7,9 @@ namespace GenepackRefinement.Jobs.Data
 {
     public class GenepackManipulationJobData
     {
-        public Genepack genepack;
-        public int ticksWorked = 0;
-        public int ticksRequired = 0;
-        public bool isPrune = false;
-        public string uniqueID = Guid.NewGuid().ToString();
+        public Genepack Genepack;
+        public GenepackManipulation Manipulation;
+        public int TicksRequired = 0;
         public List<ThingDefCountClass> RequiredIngredients;
     }
 }

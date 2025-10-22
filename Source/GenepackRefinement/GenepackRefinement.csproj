@@ -9,6 +9,7 @@
     <RootNamespace>GenepackRefinement</RootNamespace>
     <AssemblyName>GenepackRefinement</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+	<LangVersion>7.3</LangVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>
@@ -68,11 +69,16 @@
     <Compile Include="Components\World\GenepackCooldownWorldComponent.cs" />
     <Compile Include="DefOfs\JobDefOfLocal.cs" />
     <Compile Include="Dialogs\GenepackManipulationDialog.cs" />
+    <Compile Include="Extensions\EnumerableExtensions.cs" />
     <Compile Include="Jobs\Data\GenepackManipulationJobData.cs" />
     <Compile Include="Jobs\JobDrivers\GenepackManipulationJobDriver.cs" />
     <Compile Include="Jobs\WorkGivers\GenepackManipulationWorkGiver.cs" />
+    <Compile Include="Manipulations\GenepackManipulation.cs" />
+    <Compile Include="Manipulations\Prune.cs" />
+    <Compile Include="Manipulations\Split.cs" />
     <Compile Include="ModInit.cs" />
     <Compile Include="Patches\GeneAssembler_GetGizmos.cs" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

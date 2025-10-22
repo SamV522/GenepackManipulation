@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using Verse;
+using Verse.Noise;
 
 namespace GenepackRefinement.Components.Things
 {
@@ -31,17 +32,17 @@ namespace GenepackRefinement.Components.Things
         {
             if (HasJob())
             {
-                Log.Warning($"Gene Assembler already has an active job: {activeJob.uniqueID}");
+                Log.Warning($"[GenepackRefinement] Tried to set job on Gene Assembler, but Gene Assembler already has an active job");
                 return;
             }
 
             activeJob = jobData;
-            Messages.Message(ToString() + " has set a new job: " + (jobData.isPrune ? "Pruning" : "Splitting") + " genepack.", MessageTypeDefOf.NeutralEvent);
         }
 
         public void ClearJob()
         {
             activeJob = null;
+            assembler.innerContainer.TryDropAll(assembler.Position, assembler.Map, ThingPlaceMode.Near);
         }
 
         public override IEnumerable<Gizmo> CompGetGizmosExtra()
@@ -57,19 +58,7 @@ namespace GenepackRefinement.Components.Things
 
             if (HasJob())
             {
-                var cancelCommand = new Command_Action
-                {
-                    defaultLabel = "Cancel Genepack Manipulation",
-                    defaultDesc = "Cancel the current genepack manipulation job.",
-                    //icon = ContentFinder<Texture2D>.Get("Cancel"), // ffs, find the fucking cancel icon, dammit.
-                    action = () =>
-                    {
-                        ClearJob();
-                        assembler.innerContainer.TryDropAll(assembler.InteractionCell, assembler.Map, ThingPlaceMode.Near);
-                        Messages.Message("Genepack manipulation job cancelled.", MessageTypeDefOf.NegativeEvent);
-                    }
-                };
-                yield return cancelCommand;
+                yield return GenepackManipulationGizmos.MakeCancelGizmo(assembler, activeJob);
             }
         }
 
@@ -78,25 +67,12 @@ namespace GenepackRefinement.Components.Things
             return parent.Faction == Faction.OfPlayer && assembler.PowerOn == true && !assembler.Working;
         }
 
-        public override void CompTickInterval(int delta)
+        public void ExecuteManipulation()
         {
-            base.CompTickInterval(delta);
-            if (this.Working && HasJob())
-            {
-                this.GetJob().ticksWorked += delta;
-            }
-        }
-
-        public void ExecutePrune()
-        {
-            //activeJob = null;
-            Messages.Message("Genepack pruned successfully.", MessageTypeDefOf.PositiveEvent);
-        }
-
-        public void ExecuteSplit()
-        {
-            //activeJob = null;
-            Messages.Message("Genepack split successfully.", MessageTypeDefOf.PositiveEvent);
+            activeJob.Manipulation.Execute(activeJob.Genepack);
+            assembler.innerContainer.ClearAndDestroyContents();
+            Messages.Message($"Genepack {activeJob.Manipulation.Verb} successfully.", MessageTypeDefOf.PositiveEvent);
+            ClearJob();
         }
 
         public List<ThingDefCountClass> RequiredIngredients()

@@ -4,8 +4,8 @@
         <defName>GenepackManipulationWorkGiver</defName>
         <giverClass>GenepackRefinement.Jobs.GenepackManipulationWorkGiver</giverClass>
         <workType>Research</workType> <!-- This is the missing piece -->
-        <priorityInType>50</priorityInType>
+        <priorityInType>120</priorityInType>
         <verb>manipulating genepack</verb>
-        <gerund>manipulate</gerund>
+        <gerund>manipulate genepack at</gerund>
     </WorkGiverDef>
 </Defs>

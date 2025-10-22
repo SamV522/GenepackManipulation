@@ -1,5 +1,7 @@
 ﻿using GenepackRefinement.Components.Things;
+using GenepackRefinement.Components.World;
 using GenepackRefinement.Jobs.Data;
+using GenepackRefinement.Manipulations;
 using RimWorld;
 using RimWorld.Planet;
 using System;
@@ -14,21 +16,21 @@ namespace GenepackRefinement.Dialogs
 {
     public class GenepackManipulationDialog : Window
     {
-        private bool isPrune;
-        private Building_GeneAssembler assembler;
-        private GenepackManipulatorComponent genepackManipulatorComponent;
+        private GenepackManipulation _genepackManipulation;
+        private Building_GeneAssembler _assembler;
+        private GenepackManipulatorComponent _genepackManipulatorComponent;
 
-        private Genepack selectedGenepack;
-        private Vector2 scrollPos;
-        private float scrollHeight;
+        private Genepack _selectedGenepack;
+        private Vector2 _scrollPos;
+        private float _scrollHeight;
 
         public override Vector2 InitialSize => new Vector2(1016f, (float)UI.screenHeight / 2);
 
-        public GenepackManipulationDialog(Building_GeneAssembler assembler, bool isPrune)
+        public GenepackManipulationDialog(Building_GeneAssembler assembler, GenepackManipulation genepackManipulation)
         {
-            this.assembler = assembler;
-            this.genepackManipulatorComponent = assembler.GetComp<GenepackManipulatorComponent>();
-            this.isPrune = isPrune;
+            this._assembler = assembler;
+            this._genepackManipulatorComponent = assembler.GetComp<GenepackManipulatorComponent>();
+            this._genepackManipulation = genepackManipulation;
             this.forcePause = true;
             this.absorbInputAroundWindow = true;
             this.closeOnClickedOutside = true;
@@ -37,13 +39,13 @@ namespace GenepackRefinement.Dialogs
         public override void DoWindowContents(Rect inRect)
         {
             Text.Font = GameFont.Medium;
-            Widgets.Label(new Rect(inRect.x, inRect.y, inRect.width, 40f), "Select a Genepack to " + (isPrune ? "Prune" : "Split"));
+            Widgets.Label(new Rect(inRect.x, inRect.y, inRect.width, 40f), "Select a Genepack to " + _genepackManipulation.Verb);
             Text.Font = GameFont.Small;
 
             Rect scrollRect = new Rect(inRect.x, inRect.y + 50f, inRect.width, inRect.height - 100f);
-            Rect viewRect = new Rect(0, 0f, scrollRect.width - 64f, scrollHeight);
+            Rect viewRect = new Rect(0, 0f, scrollRect.width - 64f, _scrollHeight);
 
-            Widgets.BeginScrollView(scrollRect, ref scrollPos, viewRect);
+            Widgets.BeginScrollView(scrollRect, ref _scrollPos, viewRect);
 
             float curX = 10f;
             float curY = 10f;
@@ -51,13 +53,13 @@ namespace GenepackRefinement.Dialogs
             float packHeight = 100f;
             float verticalSpacing = 18f;
 
-            foreach (Genepack genepack in assembler.GetGenepacks(true, true).Where(genepack => genepack.GeneSet.GenesListForReading.Count > 1))
+            foreach (Genepack genepack in _assembler.GetGenepacks(true, true).Where(genepack => genepack.GeneSet.GenesListForReading.Count > 1))
             {
                 packWidth = (float)(34.0 + (double)GeneCreationDialogBase.GeneSize.x * (double)genepack.GeneSet.GenesListForReading.Count + 4.0 * (double)(genepack.GeneSet.GenesListForReading.Count + 2));
                 Rect packRect = new Rect(curX, curY, packWidth, packHeight);
                 if (DrawGenepack(genepack,ref curX, curY, packRect))
                 {
-                    selectedGenepack = genepack;
+                    _selectedGenepack = genepack;
                     SoundDefOf.Tick_High.PlayOneShotOnCamera();
                 }
 
@@ -70,39 +72,45 @@ namespace GenepackRefinement.Dialogs
             }
 
             if (Event.current.type == EventType.Layout)
-                scrollHeight = curY + packHeight + verticalSpacing;
+                _scrollHeight = curY + packHeight + verticalSpacing;
 
             Widgets.EndScrollView();
 
             // Confirm button button
-            if (Widgets.ButtonText(new Rect(inRect.xMax - 158f, inRect.yMax - 40f, 150f, 30f), "Start " + (isPrune ? "Pruning" : "Splitting")))
+            if (Widgets.ButtonText(new Rect(inRect.xMax - 158f, inRect.yMax - 40f, 150f, 30f), "Start " + _genepackManipulation.Gerund.CapitalizeFirst()))
             {
-                if (selectedGenepack != null)
+                if (_selectedGenepack != null)
                 {
-                    List<ThingDefCountClass> ingredients = new List<ThingDefCountClass>
+                    var cooldowns = Find.World.GetComponent<GenepackCooldownWorldComponent>();
+                    if (cooldowns.IsOnCooldown(_selectedGenepack))
                     {
-                        new ThingDefCountClass(ThingDefOf.MedicineUltratech, 1) // Glitterworld medicine
-                    };
-
-                    if (selectedGenepack.GeneSet.ArchitesTotal > 0)
-                        ingredients.Add(new ThingDefCountClass(ThingDefOf.ArchiteCapsule, selectedGenepack.GeneSet.ArchitesTotal));
-
-                    GenepackManipulationJobData jobData = new GenepackManipulationJobData()
+                        int remainingTicks = cooldowns.GetRemainingTicks(_selectedGenepack);
+                        float hours = remainingTicks / GenDate.TicksPerHour;
+                        Messages.Message($"The selected genepack is still on cooldown for {hours:0} hours.", MessageTypeDefOf.RejectInput, false);
+                    }else
                     {
-                        genepack = selectedGenepack,
-                        isPrune = isPrune,
-                        ticksWorked = 0,
-                        ticksRequired = selectedGenepack.GeneSet.ComplexityTotal * 2500,
-                        uniqueID = Guid.NewGuid().ToString(),
-                        RequiredIngredients = ingredients
-                    };
+                        List<ThingDefCountClass> ingredients = new List<ThingDefCountClass>
+                        {
+                            // Glitterworld medicine
+                            new ThingDefCountClass(ThingDefOf.MedicineUltratech, 1) 
+                        };
 
-                    genepackManipulatorComponent.SetJob(jobData);
+                        if (_selectedGenepack.GeneSet.ArchitesTotal > 0)
+                            // Archite Capsules for Archite genes
+                            ingredients.Add(new ThingDefCountClass(ThingDefOf.ArchiteCapsule, _selectedGenepack.GeneSet.ArchitesTotal)); 
 
-                    Messages.Message(genepackManipulatorComponent.NeedsIngredients().ToString(), MessageTypeDefOf.NeutralEvent);
-                    Messages.Message(string.Join(",", genepackManipulatorComponent.RequiredIngredients().Select(ing => ing.Label +" x "+ing.count).ToList()), MessageTypeDefOf.NeutralEvent);
+                        GenepackManipulationJobData jobData = new GenepackManipulationJobData()
+                        {
+                            Genepack = _selectedGenepack,
+                            Manipulation = _genepackManipulation,
+                            TicksRequired = _selectedGenepack.GeneSet.ComplexityTotal * 2500,
+                            RequiredIngredients = ingredients
+                        };
 
-                    Close();
+                        _genepackManipulatorComponent.SetJob(jobData);
+
+                        Close();
+                    }                        
                 }
                 else
                 {
@@ -123,7 +131,7 @@ namespace GenepackRefinement.Dialogs
         {
             bool clicked = false;
 
-            Widgets.DrawBoxSolid(rect, genepack == selectedGenepack ? new Color(0.3f, 0.6f, 0.3f, 0.3f) : new Color(0.2f, 0.2f, 0.2f, 0.2f));
+            Widgets.DrawBoxSolid(rect, genepack == _selectedGenepack ? new Color(0.3f, 0.6f, 0.3f, 0.3f) : new Color(0.2f, 0.2f, 0.2f, 0.2f));
             Widgets.DrawBox(rect);
             Widgets.DrawHighlight(rect);
             Widgets.DrawBox(rect);
