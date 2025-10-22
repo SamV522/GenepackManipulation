@@ -88,8 +88,8 @@ namespace GenepackManipulation.Dialogs
                     if (cooldowns.IsOnCooldown(_selectedGenepack))
                     {
                         int remainingTicks = cooldowns.GetRemainingTicks(_selectedGenepack);
-                        float hours = remainingTicks / GenDate.TicksPerHour;
-                        Messages.Message($"The selected genepack is still on cooldown for {hours:0} hours.", MessageTypeDefOf.RejectInput, false);
+                        float hours = (float) remainingTicks / GenDate.TicksPerHour;
+                        Messages.Message($"The selected genepack is still on cooldown for {hours:0.0} hours.", MessageTypeDefOf.RejectInput, false);
                     }else
                     {
                         List<ThingDefCountClass> ingredients = new List<ThingDefCountClass>
