@@ -1,33 +1,50 @@
 ﻿using GenepackManipulation.Components.World;
 using RimWorld;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Verse;
 
 namespace GenepackManipulation.Manipulations
 {
-    public abstract class GenepackManipulation
+    public abstract class GenepackManipulation : IExposable
     {
         protected Building_GeneAssembler Assembler;
         protected Genepack Genepack;
+
+        [Obsolete("For Scribe use only")]
+        public GenepackManipulation() { } // For Scribe
 
         public GenepackManipulation(Building_GeneAssembler assembler)
         {
             Assembler = assembler;
         }
 
-        public abstract string Name { get; }
-        public abstract string Verb { get; } // e.g., "prune", "split"
-        public abstract string Gerund { get; } // e.g., "Pruning", "Splitting"
+        protected string _name;
+        protected string _verb;
+        protected string _gerund;
+
+        public string Name { get => _name; protected set => _name = value; } // e.g., "Prune", "Split"
+        public string Verb { get => _verb; protected set => _verb = value; } // e.g., "prune", "split"
+        public string Gerund { get => _gerund; protected set => _gerund = value; } // e.g., "Pruning", "Splitting"
 
         public abstract void Execute(Genepack genepack);
+
+        public void ExposeData()
+        {
+            Scribe_Values.Look(ref _name, "Name");
+            Scribe_Values.Look(ref _verb, "Verb");
+            Scribe_Values.Look(ref _gerund, "Gerund");
+            Scribe_References.Look(ref Assembler, "Assembler");
+            Scribe_References.Look(ref Genepack, "Genepack");
+        }
 
         protected virtual void ApplyCooldown(Genepack genepack)
         {
             ApplyCooldowns(new List<Genepack> { genepack });
         }
 
-        protected  void ApplyCooldowns(IEnumerable<Genepack> genepacks)
+        protected void ApplyCooldowns(IEnumerable<Genepack> genepacks)
         {
             var cooldowns = Find.World.GetComponent<GenepackCooldownWorldComponent>();
 

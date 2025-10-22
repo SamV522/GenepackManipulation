@@ -1,5 +1,6 @@
 ﻿using GenepackManipulation.Extensions;
 using RimWorld;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -7,11 +8,8 @@ using Verse;
 
 namespace GenepackManipulation.Manipulations
 {
-    public class Split : GenepackManipulation
+    public class Split : GenepackManipulation, IExposable
     {
-        public override string Name => "Split";
-        public override string Verb => "split";
-        public override string Gerund => "splitting";
 
         private static readonly SimpleCurve GeneCountChanceCurve = new SimpleCurve()
         {
@@ -29,7 +27,15 @@ namespace GenepackManipulation.Manipulations
           }
         };
 
-        public Split(Building_GeneAssembler assembler) : base(assembler) { }
+        [Obsolete("For Scribe use only")]
+        public Split() : base() { } // For Scribe
+
+        public Split(Building_GeneAssembler assembler) : base(assembler)
+        {
+            Name = "Split";
+            Verb = "split";
+            Gerund = "splitting";
+        }
 
         public override void Execute(Genepack genepack)
         {

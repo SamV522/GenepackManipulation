@@ -1,4 +1,5 @@
 ﻿using RimWorld;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -6,12 +7,8 @@ using Verse;
 
 namespace GenepackManipulation.Manipulations
 {
-    public class Prune : GenepackManipulation
+    public class Prune : GenepackManipulation, IExposable
     {
-        public override string Name => "Prune";
-        public override string Verb => "prune";
-        public override string Gerund => "pruning";
-
         // Chance curve for number of genes to prune, prune 1 gene most of the time, rarely prune more
         private static readonly SimpleCurve GeneCountChanceCurve = new SimpleCurve()
         {
@@ -33,7 +30,15 @@ namespace GenepackManipulation.Manipulations
           }
         };
 
-        public Prune(Building_GeneAssembler assembler) : base(assembler) { }
+        [Obsolete("For Scribe use only")]
+        public Prune() : base() { } // For Scribe
+
+        public Prune(Building_GeneAssembler assembler) : base(assembler)
+        {
+            Name = "Prune";
+            Verb = "prune";
+            Gerund = "pruning";
+        }
 
         public override void Execute(Genepack genepack)
         {

@@ -4,9 +4,7 @@ using GenepackManipulation.Jobs.Data;
 using RimWorld;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEngine;
 using Verse;
-using Verse.Noise;
 
 namespace GenepackManipulation.Components.Things
 {
@@ -15,11 +13,8 @@ namespace GenepackManipulation.Components.Things
         public CompProperties_GenepackManipulator Props => (CompProperties_GenepackManipulator) this.props;
         private Building_GeneAssembler assembler;
         private GenepackManipulationJobData activeJob;
-        private bool workingOnJob = false;
 
         public bool HasJob() => activeJob != null;
-
-        public bool Working => workingOnJob || assembler.Working;
 
         public GenepackManipulationJobData GetJob() => activeJob;
 
@@ -98,7 +93,12 @@ namespace GenepackManipulation.Components.Things
             return RequiredIngredients().Any();
         }
 
-
+        public override void PostExposeData()
+        {
+            base.PostExposeData();
+            Scribe_References.Look(ref assembler, "assembler");
+            Scribe_Deep.Look(ref activeJob, "activeJob");
+        }
     }
 
     public class CompProperties_GenepackManipulator : CompProperties
