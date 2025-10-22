@@ -7,8 +7,7 @@ namespace GenepackManipulation.Jobs.Data
 {
     public class GenepackManipulationJobData : IExposable
     {
-        [Obsolete("For Scribe use only")]
-        public GenepackManipulationJobData() { } // For Scribe
+        public GenepackManipulationJobData() { }
 
         public Genepack Genepack;
         public Manipulations.GenepackManipulation Manipulation;
