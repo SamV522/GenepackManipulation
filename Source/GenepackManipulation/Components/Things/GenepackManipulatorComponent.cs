@@ -46,19 +46,14 @@ namespace GenepackManipulation.Components.Things
             foreach (var gizmo in base.CompGetGizmosExtra())
                 yield return gizmo;
 
-            if (CanManipulateNow() && !HasJob())
-            {
-                if (ResearchDefOfLocal.GenePruning.IsFinished)
-                    yield return GenepackManipulationGizmos.MakePruneGizmo(assembler);
+            if (ResearchDefOfLocal.GenePruning.IsFinished)
+                yield return GenepackManipulationGizmos.MakePruneGizmo(assembler);
 
-                if (ResearchDefOfLocal.GeneSplitting.IsFinished)
-                    yield return GenepackManipulationGizmos.MakeSplitGizmo(assembler);
-            }
+            if (ResearchDefOfLocal.GeneSplitting.IsFinished)
+                yield return GenepackManipulationGizmos.MakeSplitGizmo(assembler);
 
             if (HasJob())
-            {
                 yield return GenepackManipulationGizmos.MakeCancelGizmo(assembler, activeJob);
-            }
         }
 
         public bool CanManipulateNow()
