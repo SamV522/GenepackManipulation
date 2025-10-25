@@ -47,7 +47,7 @@ namespace GenepackManipulation.Components.Things.Gizmos
                 {
                     Find.WindowStack.Add(new GenepackManipulationDialog(assembler, new Manipulations.Prune(assembler)));
                 }
-            };
+            }.DisableIfUnavailable(assembler);
         }
 
         public static Command_Action MakeSplitGizmo(Building_GeneAssembler assembler)
@@ -81,7 +81,7 @@ namespace GenepackManipulation.Components.Things.Gizmos
                         Messages.Message("Genepack manipulation job cancelled.", MessageTypeDefOf.NeutralEvent);
                     }
                 }
-            }.DisableIfUnavailable(assembler);
+            };
         }
     }
 }
