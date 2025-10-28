@@ -26,11 +26,15 @@ namespace GenepackManipulation.Jobs
 
             if (!pawn.CanReserve(t, 1, -1, null, forced)) return false;
 
-            // try to reserve the genepack as well
-            if (!pawn.CanReserve(jobData.Genepack, 1, -1, null, true))
+            // if the genepack is in a genebank
+            if (jobData.Genepack.ParentHolder is CompGenepackContainer genebank && genebank.parent != null)
             {
-                Log.Warning($"[GenepackManipulation] Pawn {pawn} cannot reserve genepack {jobData.Genepack}. Cannot assign GenepackManipulation job.");
-                return false;
+                // reserve the genebank instead - reserving the genepack itself can cause issues if it is in a genebank
+                if (!pawn.CanReserve(genebank.parent, 1, -1, null, false))
+                {
+                    Log.Warning($"[GenepackManipulation] Pawn {pawn} cannot reserve genepack {jobData.Genepack}. Cannot assign GenepackManipulation job.");
+                    return false;
+                }
             }
 
             if (t.IsForbidden(pawn)) return false;
