@@ -35,9 +35,9 @@ namespace GenepackManipulation.Manipulations
 
         public Prune(Building_GeneAssembler assembler) : base(assembler)
         {
-            Name = "Prune";
-            Verb = "prune";
-            Gerund = "pruning";
+            Name = "GenepackManipulationPrune".Translate();
+            Verb = "GenepackManipulationPruneVerb".Translate();
+            Gerund = "GenepackManipulationPruneGerund".Translate();
         }
 
         public override void Execute(Genepack genepack)

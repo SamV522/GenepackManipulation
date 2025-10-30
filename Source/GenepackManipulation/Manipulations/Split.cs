@@ -32,9 +32,9 @@ namespace GenepackManipulation.Manipulations
 
         public Split(Building_GeneAssembler assembler) : base(assembler)
         {
-            Name = "Split";
-            Verb = "split";
-            Gerund = "splitting";
+            Name = "GenepackManipulationSplit".Translate();
+            Verb = "GenepackManipulationSplitVerb".Translate();
+            Gerund = "GenepackManipulationSplitGerund".Translate();
         }
 
         public override void Execute(Genepack genepack)

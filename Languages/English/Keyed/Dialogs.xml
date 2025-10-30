@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+    <GenepackManipulationSelect>Select a genepack to {0}</GenepackManipulationSelect>
+    <GenepackManipulationPleaseSelect>Please select a genepack first.</GenepackManipulationPleaseSelect>
+    <GenepackManipulationStart>Start {0}</GenepackManipulationStart>
+    <GenepackManipulationOnCooldown>The selected genepack is on cooldown for {0} hours.</GenepackManipulationOnCooldown>
+</LanguageData>

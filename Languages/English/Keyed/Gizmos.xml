@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+    <!-- Unavailable -->
+    <GenepackManipulationInProgress>Manipulation job already in progress</GenepackManipulationInProgress>
+
+    <!-- Prune -->
+    <GenepackManipulationPruneGizmoLabel>Prune</GenepackManipulationPruneGizmoLabel>
+    <GenepackManipulationPruneGizmoDesc>Remove randomly selected gene(s) from a genepack.</GenepackManipulationPruneGizmoDesc>
+    
+    <!-- Split -->
+    <GenepackManipulationSplitGizmoLabel>Split</GenepackManipulationSplitGizmoLabel>
+    <GenepackManipulationSplitGizmoDesc>Split a genepack into two genepacks.</GenepackManipulationSplitGizmoDesc>
+
+    <!-- Cancel Gerund -->
+    <GenepackManipulationCancelGizmoLabel>Cancel Manipulation</GenepackManipulationCancelGizmoLabel>
+    <GenepackManipulationCancelGizmoDesc>Cancel the current genepack manipulation job.</GenepackManipulationCancelGizmoDesc>
+    <GenepackManipulationCancelGizmoMessage>Genepack manipulation job cancelled.</GenepackManipulationCancelGizmoMessage>
+</LanguageData>

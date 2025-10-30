@@ -30,7 +30,7 @@ namespace GenepackManipulation.Components.Things.Gizmos
             var comp = assembler.TryGetComp<GenepackManipulatorComponent>();
             if (comp != null && comp.HasJob())
             {
-                action.Disable("CannotUseReason".Translate("Manipulation job already in progress"));
+                action.Disable("CannotUseReason".Translate("GenepackManipulationInProgress".Translate()));
             }
 
             return action;
@@ -40,8 +40,8 @@ namespace GenepackManipulation.Components.Things.Gizmos
         {
             return new Command_Action
             {
-                defaultLabel = "Prune",
-                defaultDesc = "Remove randomly selected gene(s) from a genepack.",
+                defaultLabel = "GenepackManipulationPruneGizmoLabel".Translate(),
+                defaultDesc = "GenepackManipulationPruneGizmoDesc".Translate(),
                 icon = ContentFinder<Texture2D>.Get("UI/Gizmos/samv522.genepackrefinment.prune"),
                 action = () =>
                 {
@@ -54,8 +54,8 @@ namespace GenepackManipulation.Components.Things.Gizmos
         {
             return new Command_Action
             {
-                defaultLabel = "Split",
-                defaultDesc = "Split a genepack into two genepacks.",
+                defaultLabel = "GenepackManipulationSplitGizmoLabel".Translate(),
+                defaultDesc = "GenepackManipulationPruneGizmoDesc".Translate(),
                 icon = ContentFinder<Texture2D>.Get("UI/Gizmos/samv522.genepackrefinment.split"),
                 action = () =>
                 {
@@ -68,8 +68,8 @@ namespace GenepackManipulation.Components.Things.Gizmos
         {
             return new Command_Action
             {
-                defaultLabel = "Cancel "+ jobData.Manipulation.Gerund.CapitalizeFirst(),
-                defaultDesc = "Cancel the current genepack manipulation job.",
+                defaultLabel = "GenepackManipulationCancelGizmoLabel".Translate(),
+                defaultDesc = "GenepackManipulationCancelDescGizmoLabel".Translate(),
                 icon = ContentFinder<Texture2D>.Get("UI/Designators/Cancel"),
                 hotKey = KeyBindingDefOf.Designator_Cancel,
                 action = () =>
@@ -78,7 +78,7 @@ namespace GenepackManipulation.Components.Things.Gizmos
                     if (comp != null && comp.HasJob())
                     {
                         comp.ClearJob();
-                        Messages.Message("Genepack manipulation job cancelled.", MessageTypeDefOf.NeutralEvent);
+                        Messages.Message("GenepackManipulationCancelGizmoMessage".Translate(), MessageTypeDefOf.NeutralEvent);
                     }
                 }
             };

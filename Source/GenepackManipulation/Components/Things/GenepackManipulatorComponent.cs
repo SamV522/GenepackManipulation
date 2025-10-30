@@ -65,7 +65,7 @@ namespace GenepackManipulation.Components.Things
         {
             activeJob.Manipulation.Execute(activeJob.Genepack);
             assembler.innerContainer.ClearAndDestroyContents();
-            Messages.Message($"Genepack {activeJob.Manipulation.Verb} successfully.", MessageTypeDefOf.PositiveEvent);
+            Messages.Message("GenepackManipulationSuccessful".Translate(activeJob.Manipulation.Verb), MessageTypeDefOf.PositiveEvent);
             ClearJob();
         }
 

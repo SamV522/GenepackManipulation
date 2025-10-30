@@ -36,7 +36,7 @@ namespace GenepackManipulation.Dialogs
         public override void DoWindowContents(Rect inRect)
         {
             Text.Font = GameFont.Medium;
-            Widgets.Label(new Rect(inRect.x, inRect.y, inRect.width, 40f), "Select a Genepack to " + _genepackManipulation.Verb);
+            Widgets.Label(new Rect(inRect.x, inRect.y, inRect.width, 40f), "GenepackManipulationSelect".Translate(_genepackManipulation.Verb));
             Text.Font = GameFont.Small;
 
             Rect scrollRect = new Rect(inRect.x, inRect.y + 50f, inRect.width, inRect.height - 100f);
@@ -80,7 +80,7 @@ namespace GenepackManipulation.Dialogs
             Widgets.EndScrollView();
 
             // Confirm button button
-            if (Widgets.ButtonText(new Rect(inRect.xMax - 158f, inRect.yMax - 40f, 150f, 30f), "Start " + _genepackManipulation.Gerund.CapitalizeFirst()))
+            if (Widgets.ButtonText(new Rect(inRect.xMax - 158f, inRect.yMax - 40f, 150f, 30f), "GenepackManipulationStart".Translate(_genepackManipulation.Gerund.CapitalizeFirst())))
             {
                 if (_selectedGenepack != null)
                 {
@@ -89,8 +89,9 @@ namespace GenepackManipulation.Dialogs
                     {
                         int remainingTicks = cooldowns.GetRemainingTicks(_selectedGenepack);
                         float hours = (float) remainingTicks / GenDate.TicksPerHour;
-                        Messages.Message($"The selected genepack is still on cooldown for {hours:0.0} hours.", MessageTypeDefOf.RejectInput, false);
-                    }else
+                        Messages.Message("GenepackManipulationOnCooldown".Translate(hours.ToString("0.0")), MessageTypeDefOf.RejectInput, false);
+                    }
+                    else
                     {
                         List<ThingDefCountClass> ingredients = new List<ThingDefCountClass>
                         {
@@ -117,11 +118,11 @@ namespace GenepackManipulation.Dialogs
                 }
                 else
                 {
-                    Messages.Message("Please select a genepack first.", MessageTypeDefOf.RejectInput, false);
+                    Messages.Message("GenepackManipulationPleaseSelect".Translate(), MessageTypeDefOf.RejectInput, false);
                 }
             }
 
-            if (Widgets.ButtonText(new Rect(8, inRect.yMax - 40f, 150f, 30f), "Close"))
+            if (Widgets.ButtonText(new Rect(8, inRect.yMax - 40f, 150f, 30f), "Close".Translate()))
             {
                 Close();
             }

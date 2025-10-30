@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+    <GenepackManipulationSuccessful>Genepack {0} successfully.</GenepackManipulationSuccessful>
+
+    <!-- Prune -->
+    <GenepackManipulationPrune>Prune</GenepackManipulationPrune>
+    <GenepackManipulationPruneVerb>prune</GenepackManipulationPruneVerb>
+    <GenepackManipulationPruneGerund>pruning</GenepackManipulationPruneGerund>
+    
+    <!-- Split -->
+    <GenepackManipulationSplit>Split</GenepackManipulationSplit>
+    <GenepackManipulationSplitVerb>split</GenepackManipulationSplitVerb>
+    <GenepackManipulationSplitGerund>splitting</GenepackManipulationSplitGerund>    
+</LanguageData>
