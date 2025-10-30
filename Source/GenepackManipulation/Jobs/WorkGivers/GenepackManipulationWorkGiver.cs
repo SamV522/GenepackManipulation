@@ -89,7 +89,7 @@ namespace GenepackManipulation.Jobs
 
             if (JobDefOfLocal.GenepackManipulation == null)
             {
-                Log.Error("JobDefOfLocal.GenepackManipulation is null!");
+                Log.Error("[GenepackManipulation] JobDefOfLocal.GenepackManipulation is null!");
                 return null;
             }
 
@@ -98,11 +98,11 @@ namespace GenepackManipulation.Jobs
 
             if (manipulationJob == null)
             {
-                Log.Error("Failed to create GenepackManipulation job!");
+                Log.Error("[GenepackManipulation] Failed to create GenepackManipulation job!");
                 return null;
             }
             else
-                Log.Message("Created GenepackManipulation job successfully.");
+                Log.Message("[GenepackManipulation] Created GenepackManipulation job successfully.");
 
             return manipulationJob;
         }

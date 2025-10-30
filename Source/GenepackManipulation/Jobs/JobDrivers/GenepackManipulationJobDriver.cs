@@ -29,7 +29,7 @@ namespace GenepackManipulation.Jobs
         {
             if(TargetA.Thing == null)
             {
-                Log.Error("TargetA is null!");
+                Log.Error("[GenepackManipulation] TargetA is null!");
                 yield break;
             }
 
@@ -38,7 +38,7 @@ namespace GenepackManipulation.Jobs
             GenepackManipulatorComponent comp = TargetA.Thing.TryGetComp<GenepackManipulatorComponent>();
             if (comp == null)
             {
-                Log.Error("GenepackManipulatorComponent not found!");
+                Log.Error("[GenepackManipulation] GenepackManipulatorComponent not found!");
                 yield break;
             }
 
