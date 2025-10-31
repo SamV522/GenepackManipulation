@@ -36,8 +36,14 @@ namespace GenepackManipulation.Manipulations
 
         public Prune(Building_GeneAssembler assembler, ManipulationDef def) : base(assembler, def) { }
 
-        public override void Execute(Genepack genepack)
+        public override List<Genepack> FilterGenepacks(List<Genepack> genepacks)
         {
+            return base.FilterGenepacks(genepacks).Where(genepack => genepack.GeneSet.GenesListForReading.Count > 1).ToList();
+        }
+
+        public override void Execute(List<Genepack> genepacks)
+        {
+            Genepack genepack = genepacks.Single();
             // Determine number of genes to prune
             int num = Mathf.Min((int)GeneCountChanceCurve.RandomElementByWeight(p => p.y).x, genepack.GeneSet.GenesListForReading.Count);
 

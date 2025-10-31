@@ -33,17 +33,17 @@ namespace GenepackManipulation.Manipulations
         /// <summary>
         /// Gets or sets the name of the manipulation
         /// </summary>
-        internal string Name { get => _name; set => _name = value; } // e.g., "Prune", "Split"
+        public string Name { get => _name; protected set => _name = value; } // e.g., "Prune", "Split"
 
         /// <summary>
         /// Gets or sets the action verb associated with the operation, such as "prune" or "split".
         /// </summary>
-        internal string Verb { get => _verb; set => _verb = value; } // e.g., "prune", "split"
+        public string Verb { get => _verb; protected set => _verb = value; } // e.g., "prune", "split"
 
         /// <summary>
         /// Gets the current gerund form of the action being performed, such as "Pruning" or "Splitting".
         /// </summary>
-        internal string Gerund { get => _gerund; set => _gerund = value; } // e.g., "Pruning", "Splitting"
+        public string Gerund { get => _gerund; protected set => _gerund = value; } // e.g., "Pruning", "Splitting"
 
         /// <summary>
         /// Filters the provided list of genepacks based on specific criteria.
@@ -54,8 +54,8 @@ namespace GenepackManipulation.Manipulations
         /// filtering.</returns>
         public virtual List<Genepack> FilterGenepacks(List<Genepack> genepacks)
         {
-            // By default, only return genepacks with more than one gene
-            return genepacks.Where(genepack => genepack.GeneSet.GenesListForReading.Count > 1).ToList();
+            // By default do not filter
+            return genepacks;
         }
 
         /// <summary>
@@ -89,7 +89,7 @@ namespace GenepackManipulation.Manipulations
         /// <remarks>This method performs the core operation on the provided genepack. Ensure that the
         /// genepack is properly initialized before calling this method.</remarks>
         /// <param name="genepack">The genepack to be processed. Cannot be null.</param>
-        public abstract void Execute(Genepack genepack);
+        public abstract void Execute(List<Genepack> genepack);
 
         /// <summary>
         /// Get the dialog window to be displayed for this manipulation when the gizmo is clicked

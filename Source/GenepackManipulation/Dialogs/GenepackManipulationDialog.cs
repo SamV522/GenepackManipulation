@@ -16,7 +16,6 @@ namespace GenepackManipulation.Dialogs
         private readonly Manipulations.GenepackManipulation _genepackManipulation;
         private readonly Building_GeneAssembler _assembler;
         private readonly GenepackManipulatorComponent _genepackManipulatorComponent;
-        private List<Genepack> _availableGenepacks;
 
         private Genepack _selectedGenepack;
         private Vector2 _scrollPos;
@@ -84,12 +83,20 @@ namespace GenepackManipulation.Dialogs
             {
                 if (_selectedGenepack != null)
                 {
+                    var targetGenepacks = new List<Genepack> { _selectedGenepack };
                     var cooldowns = Find.World.GetComponent<GenepackCooldownWorldComponent>();
-                    if (cooldowns.IsOnCooldown(_selectedGenepack))
+                    if (cooldowns.IsOnCooldown(targetGenepacks))
                     {
-                        int remainingTicks = cooldowns.GetRemainingTicks(_selectedGenepack);
-                        float hours = (float) remainingTicks / GenDate.TicksPerHour;
-                        Messages.Message("GenepackManipulationOnCooldown".Translate(hours.ToString("0.0")), MessageTypeDefOf.RejectInput, false);
+                        foreach (Genepack genepack in targetGenepacks.Where(x => x != null))
+                        {
+                            if (!cooldowns.IsOnCooldown(genepack))
+                            {
+                                int remainingTicks = cooldowns.GetRemainingTicks(genepack);
+                                float hours = (float)remainingTicks / GenDate.TicksPerHour;
+                                Messages.Message("GenepackManipulationOnCooldown".Translate(hours.ToString("0.0")), MessageTypeDefOf.RejectInput, false);
+                                return;
+                            }
+                        }
                     }
                     else
                     {
@@ -97,10 +104,10 @@ namespace GenepackManipulation.Dialogs
 
                         GenepackManipulationJobData jobData = new GenepackManipulationJobData()
                         {
-                            Genepack = _selectedGenepack,
+                            Genepacks = targetGenepacks,
                             Manipulation = _genepackManipulation,
-                            TicksRequired = _selectedGenepack.GeneSet.ComplexityTotal * 2500,
-                            RequiredIngredients = _genepackManipulation.CalculateRequiredIngredients(new List<Genepack> {_selectedGenepack})
+                            TicksRequired = targetGenepacks.Sum(g => g.GeneSet.ComplexityTotal) * 2500,
+                            RequiredIngredients = _genepackManipulation.CalculateRequiredIngredients(targetGenepacks)
                         };
 
                         _genepackManipulatorComponent.SetJob(jobData);

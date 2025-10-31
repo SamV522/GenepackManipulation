@@ -8,15 +8,15 @@ namespace GenepackManipulation.Jobs.Data
     {
         public GenepackManipulationJobData() { }
 
-        internal Genepack Genepack;
-        internal Manipulations.GenepackManipulation Manipulation;
+        public List<Genepack> Genepacks;
+        public Manipulations.GenepackManipulation Manipulation;
         internal int TicksElapsed = 0;
-        internal int TicksRequired = 0;
-        internal List<ThingDefCountClass> RequiredIngredients;
+        public int TicksRequired = 0;
+        public List<ThingDefCountClass> RequiredIngredients;
 
         public void ExposeData()
         {
-            Scribe_References.Look(ref Genepack, "Genepack");
+            Scribe_Deep.Look(ref Genepacks, "Genepack");
             Scribe_Deep.Look(ref Manipulation, "Manipulation");
             Scribe_Values.Look(ref TicksElapsed, "TicksElapsed");
             Scribe_Values.Look(ref TicksRequired, "TicksRequired");

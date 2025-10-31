@@ -27,12 +27,13 @@ namespace GenepackManipulation.Jobs
             if (!pawn.CanReserve(t, 1, -1, null, forced)) return false;
 
             // if the genepack is in a genebank
-            if (jobData.Genepack.ParentHolder is CompGenepackContainer genebank && genebank.parent != null)
+            foreach(var genepack in jobData.Genepacks)
             {
+                if (genepack.ParentHolder is CompGenepackContainer genebank && genebank.parent != null)
                 // reserve the genebank instead - reserving the genepack itself can cause issues if it is in a genebank
                 if (!pawn.CanReserve(genebank.parent, 1, -1, null, false))
                 {
-                    Log.Warning($"[GenepackManipulation] Pawn {pawn} cannot reserve genepack {jobData.Genepack}. Cannot assign GenepackManipulation job.");
+                    Log.Warning($"[GenepackManipulation] Pawn {pawn} cannot reserve genepack {genepack}. Cannot assign GenepackManipulation job.");
                     return false;
                 }
             }
@@ -57,19 +58,22 @@ namespace GenepackManipulation.Jobs
                 Log.Error($"[GenepackManipulation] No current job found for assembler {assembler}. Cannot create GenepackManipulation job.");
                 return null;
             }
-
-            
-            if (!assembler.innerContainer.Contains(compJob.Genepack))
+                        
+            foreach (Genepack genepack in compJob.Genepacks)
             {
-                if (compJob.Genepack == null)
+                if (genepack == null)
                 {
-                    Log.Error("[GenepackManipulation] Genepack to manipulate is null!");
+                    Log.Error("[GenepackManipulation] One of the genepacks to manipulate is null!");
                     return null;
                 }
-                
-                Job job = JobMaker.MakeJob(JobDefOf.HaulToContainer, compJob.Genepack, (LocalTargetInfo)t);
-                job.count = 1;
-                return job;
+
+                if (genepack.ParentHolder is CompGenepackContainer genebank || genepack.ParentHolder == null)
+                {
+                    // Haul the genepack from the genebank to the assembler
+                    Job job = JobMaker.MakeJob(JobDefOf.HaulToContainer, genepack, (LocalTargetInfo)t);
+                    job.count = 1;
+                    return job;
+                }
             }
 
             // Take the required ingredients to the assembler

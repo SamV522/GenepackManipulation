@@ -1,4 +1,5 @@
-﻿using RimWorld.Planet;
+﻿using RimWorld;
+using RimWorld.Planet;
 using System.Collections.Generic;
 using Verse;
 
@@ -16,7 +17,17 @@ namespace GenepackManipulation.Components.World
             genepackCooldowns[genepack.ThingID] = Find.TickManager.TicksGame + cooldownTicks;
         }
 
-        internal bool IsOnCooldown(Thing genepack)
+        public bool IsOnCooldown(List<Genepack> genepacks)
+        {
+            foreach (var genepack in genepacks)
+            {
+                if (IsOnCooldown(genepack))
+                    return true;
+            }
+            return false;
+        }
+
+        public bool IsOnCooldown(Thing genepack)
         {
             if (genepack == null || genepack.Destroyed) return false;
             if (genepackCooldowns.TryGetValue(genepack.ThingID, out int endTick))
@@ -26,7 +37,7 @@ namespace GenepackManipulation.Components.World
             return false;
         }
 
-        internal int GetRemainingTicks(Thing genepack)
+        public int GetRemainingTicks(Thing genepack)
         {
             if (genepackCooldowns.TryGetValue(genepack.ThingID, out int endTick))
             {

@@ -14,9 +14,9 @@ namespace GenepackManipulation.Components.Things
         private Building_GeneAssembler assembler;
         private GenepackManipulationJobData activeJob;
 
-        internal bool HasJob() => activeJob != null;
+        public bool HasJob() => activeJob != null;
 
-        internal GenepackManipulationJobData GetJob() => activeJob;
+        public GenepackManipulationJobData GetJob() => activeJob;
 
         public override void PostSpawnSetup(bool respawningAfterLoad)
         {
@@ -24,7 +24,7 @@ namespace GenepackManipulation.Components.Things
             assembler = parent as Building_GeneAssembler;
         }
 
-        internal void SetJob(GenepackManipulationJobData jobData)
+        public void SetJob(GenepackManipulationJobData jobData)
         {
             if (HasJob())
             {
@@ -73,7 +73,7 @@ namespace GenepackManipulation.Components.Things
 
         internal void ExecuteManipulation()
         {
-            activeJob.Manipulation.Execute(activeJob.Genepack);
+            activeJob.Manipulation.Execute(activeJob.Genepacks);
             assembler.innerContainer.ClearAndDestroyContents();
             Messages.Message("GenepackManipulationSuccessful".Translate(activeJob.Manipulation.Verb), MessageTypeDefOf.PositiveEvent);
             ClearJob();

@@ -82,7 +82,6 @@
     <Compile Include="ModInit.cs" />
     <Compile Include="Patches\GeneAssembler_GetGizmos.cs" />
     <Compile Include="Types\ManipulationTypeCache.cs" />
-    <Compile Include="Types\Singleton.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

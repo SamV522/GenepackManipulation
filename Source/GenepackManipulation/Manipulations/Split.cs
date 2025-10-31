@@ -33,8 +33,15 @@ namespace GenepackManipulation.Manipulations
 
         public Split(Building_GeneAssembler assembler, ManipulationDef def) : base(assembler, def) { }
 
-        public override void Execute(Genepack genepack)
+        public override List<Genepack> FilterGenepacks(List<Genepack> genepacks)
         {
+            return base.FilterGenepacks(genepacks).Where(genepack => genepack.GeneSet.GenesListForReading.Count > 1).ToList();
+        }
+
+        public override void Execute(List<Genepack> genepacks)
+        {
+            Genepack genepack = genepacks.Single();
+
             if (genepack.GeneSet.GenesListForReading.Count <= 1)
             {
                 Log.Warning($"[GenepackManipulation] Tried to split a genepack with 1 gene. Skipping.");
