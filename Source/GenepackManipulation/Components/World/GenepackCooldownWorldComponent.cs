@@ -4,19 +4,19 @@ using Verse;
 
 namespace GenepackManipulation.Components.World
 {
-    internal class GenepackCooldownWorldComponent : WorldComponent
+    public class GenepackCooldownWorldComponent : WorldComponent
     {
         private Dictionary<string, int> genepackCooldowns = new Dictionary<string, int>();
 
         public GenepackCooldownWorldComponent(RimWorld.Planet.World world) : base(world) { }
 
-        public void ApplyCooldown(Thing genepack, int cooldownTicks)
+        internal void ApplyCooldown(Thing genepack, int cooldownTicks)
         {
             if (genepack == null || genepack.Destroyed) return;
             genepackCooldowns[genepack.ThingID] = Find.TickManager.TicksGame + cooldownTicks;
         }
 
-        public bool IsOnCooldown(Thing genepack)
+        internal bool IsOnCooldown(Thing genepack)
         {
             if (genepack == null || genepack.Destroyed) return false;
             if (genepackCooldowns.TryGetValue(genepack.ThingID, out int endTick))
@@ -26,7 +26,7 @@ namespace GenepackManipulation.Components.World
             return false;
         }
 
-        public int GetRemainingTicks(Thing genepack)
+        internal int GetRemainingTicks(Thing genepack)
         {
             if (genepackCooldowns.TryGetValue(genepack.ThingID, out int endTick))
             {
@@ -35,7 +35,7 @@ namespace GenepackManipulation.Components.World
             return 0;
         }
 
-        public void CleanupExpired()
+        internal void CleanupExpired()
         {
             int currentTick = Find.TickManager.TicksGame;
             foreach (var key in new List<string>(genepackCooldowns.Keys))

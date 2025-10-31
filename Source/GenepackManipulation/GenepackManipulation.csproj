@@ -67,6 +67,7 @@
     <Compile Include="Components\Things\GenepackManipulatorComponent.cs" />
     <Compile Include="Components\Things\Gizmos\GenepackManipulationGizmos.cs" />
     <Compile Include="Components\World\GenepackCooldownWorldComponent.cs" />
+    <Compile Include="Defs\ManipulationDef.cs" />
     <Compile Include="Defs\JobDefOfLocal.cs" />
     <Compile Include="Defs\ResearchDefOfLocal.cs" />
     <Compile Include="Dialogs\GenepackManipulationDialog.cs" />
@@ -74,12 +75,18 @@
     <Compile Include="Jobs\Data\GenepackManipulationJobData.cs" />
     <Compile Include="Jobs\JobDrivers\GenepackManipulationJobDriver.cs" />
     <Compile Include="Jobs\WorkGivers\GenepackManipulationWorkGiver.cs" />
+    <Compile Include="Manipulations\ManipulationFactory.cs" />
     <Compile Include="Manipulations\Manipulation.cs" />
     <Compile Include="Manipulations\Prune.cs" />
     <Compile Include="Manipulations\Split.cs" />
     <Compile Include="ModInit.cs" />
     <Compile Include="Patches\GeneAssembler_GetGizmos.cs" />
+    <Compile Include="Types\ManipulationTypeCache.cs" />
+    <Compile Include="Types\Singleton.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Target Name="PostBuildCopy" AfterTargets="Build">
+    <Copy SourceFiles="$(TargetPath)" DestinationFolder="D:\SteamLibrary\steamapps\common\RimWorld\Mods\GenepackManipulation\Assemblies" />
+  </Target>
 </Project>

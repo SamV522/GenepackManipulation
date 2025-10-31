@@ -1,4 +1,5 @@
-﻿using RimWorld;
+﻿using GenepackManipulation.Defs;
+using RimWorld;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,12 +34,7 @@ namespace GenepackManipulation.Manipulations
         [Obsolete("For Scribe use only")]
         public Prune() : base() { } // For Scribe
 
-        public Prune(Building_GeneAssembler assembler) : base(assembler)
-        {
-            Name = "GenepackManipulationPrune".Translate();
-            Verb = "GenepackManipulationPruneVerb".Translate();
-            Gerund = "GenepackManipulationPruneGerund".Translate();
-        }
+        public Prune(Building_GeneAssembler assembler, ManipulationDef def) : base(assembler, def) { }
 
         public override void Execute(Genepack genepack)
         {

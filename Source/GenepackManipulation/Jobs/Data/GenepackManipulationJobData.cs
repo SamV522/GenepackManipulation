@@ -8,11 +8,11 @@ namespace GenepackManipulation.Jobs.Data
     {
         public GenepackManipulationJobData() { }
 
-        public Genepack Genepack;
-        public Manipulations.GenepackManipulation Manipulation;
-        public int TicksElapsed = 0;
-        public int TicksRequired = 0;
-        public List<ThingDefCountClass> RequiredIngredients;
+        internal Genepack Genepack;
+        internal Manipulations.GenepackManipulation Manipulation;
+        internal int TicksElapsed = 0;
+        internal int TicksRequired = 0;
+        internal List<ThingDefCountClass> RequiredIngredients;
 
         public void ExposeData()
         {

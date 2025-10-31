@@ -15,7 +15,7 @@ namespace GenepackManipulation.Jobs
 
         public override bool HasJobOnThing(Pawn pawn, Thing t, bool forced = false)
         {
-            var assembler = t as Building_GeneAssembler;
+            Building_GeneAssembler assembler = t as Building_GeneAssembler;
             if (assembler == null) return false;
 
             var comp = assembler.TryGetComp<GenepackManipulatorComponent>();

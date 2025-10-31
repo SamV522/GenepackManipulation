@@ -4,9 +4,9 @@ using Verse;
 
 namespace GenepackManipulation.Extensions
 {
-    public static class EnumerableExtensions
+    internal static class EnumerableExtensions
     {
-        public static (List<T> remainder, List<T> selected) Split<T>(this IEnumerable<T> source, int count, bool shuffle = false)
+        internal static (List<T> remainder, List<T> selected) Split<T>(this IEnumerable<T> source, int count, bool shuffle = false)
         {
             var workingList = shuffle ? source.OrderBy(x => Rand.Value).ToList() : source.ToList();
 

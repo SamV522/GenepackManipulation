@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+    <GenepackManipulation.Defs.ManipulationDef>
+        <defName>Prune</defName>
+        <name>Prune</name>
+        <!-- The description for the manipulation that will show in the gizmo/float label-->
+        <gizmoDescription>Remove randomly selected gene(s) from a genepack.</gizmoDescription>
+        <verb>prune</verb>
+        <gerund>Pruning</gerund>
+        <iconPath>UI/Gizmos/samv522.genepackrefinment.prune</iconPath>
+        <!-- This must be the fully qualified class name, including the namespace -->
+        <className>GenepackManipulation.Manipulations.Prune</className>
+        <requiredResearch>
+            <li>GenePruning</li>
+        </requiredResearch>
+    </GenepackManipulation.Defs.ManipulationDef>
+    <GenepackManipulation.Defs.ManipulationDef>
+        <defName>Split</defName>
+        <name>Split</name>
+        <gizmoDescription>Split a genepack into two genepacks.</gizmoDescription>
+        <verb>split</verb>
+        <gerund>Splitting</gerund>
+        <iconPath>UI/Gizmos/samv522.genepackrefinment.split</iconPath>
+        <!-- This must be the fully qualified class name, including the namespace -->
+        <className>GenepackManipulation.Manipulations.Split</className>
+        <requiredResearch>
+            <li>GeneSplitting</li>
+        </requiredResearch>
+    </GenepackManipulation.Defs.ManipulationDef>
+</Defs>

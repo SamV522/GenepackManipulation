@@ -7,7 +7,7 @@ using Verse.AI;
 
 namespace GenepackManipulation.Jobs
 {
-    internal class GenepackManipulationJobDriver : JobDriver
+    public class GenepackManipulationJobDriver : JobDriver
     {
         public override bool TryMakePreToilReservations(bool errorOnFailed)
         {

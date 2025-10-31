@@ -8,8 +8,12 @@
     <GenepackManipulationPruneGizmoDesc>Remove randomly selected gene(s) from a genepack.</GenepackManipulationPruneGizmoDesc>
     
     <!-- Split -->
-    <GenepackManipulationSplitGizmoLabel>Split</GenepackManipulationSplitGizmoLabel>
-    <GenepackManipulationSplitGizmoDesc>Split a genepack into two genepacks.</GenepackManipulationSplitGizmoDesc>
+    <GenepackManipulationMuliGizmoLabel>Split</GenepackManipulationMuliGizmoLabel>
+    <GenepackManipulationMuliGizmoDesc>Split a genepack into two genepacks.</GenepackManipulationMuliGizmoDesc>
+
+    <!-- Multi Manipulation Gizmo Shown when there are > 2 manipulations available -->
+    <GenepackManipulationSingleGizmoLabel>Manipulate Genepack...</GenepackManipulationSingleGizmoLabel>
+    <GenepackManipulationSingleGizmoDesc>Choose a genepack manipulation to perform.</GenepackManipulationSingleGizmoDesc>
 
     <!-- Cancel Gerund -->
     <GenepackManipulationCancelGizmoLabel>Cancel Manipulation</GenepackManipulationCancelGizmoLabel>

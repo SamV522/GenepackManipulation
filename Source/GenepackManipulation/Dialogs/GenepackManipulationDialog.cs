@@ -16,6 +16,7 @@ namespace GenepackManipulation.Dialogs
         private readonly Manipulations.GenepackManipulation _genepackManipulation;
         private readonly Building_GeneAssembler _assembler;
         private readonly GenepackManipulatorComponent _genepackManipulatorComponent;
+        private List<Genepack> _availableGenepacks;
 
         private Genepack _selectedGenepack;
         private Vector2 _scrollPos;
@@ -23,7 +24,7 @@ namespace GenepackManipulation.Dialogs
 
         public override Vector2 InitialSize => new Vector2(1016f, (float)UI.screenHeight / 2);
 
-        public GenepackManipulationDialog(Building_GeneAssembler assembler, Manipulations.GenepackManipulation genepackManipulation)
+        internal GenepackManipulationDialog(Building_GeneAssembler assembler, Manipulations.GenepackManipulation genepackManipulation)
         {
             this._assembler = assembler;
             this._genepackManipulatorComponent = assembler.GetComp<GenepackManipulatorComponent>();
@@ -50,8 +51,7 @@ namespace GenepackManipulation.Dialogs
             float packHeight = 100f;
             float verticalSpacing = 18f;
 
-            IEnumerable<Genepack> genepacks = _assembler.GetGenepacks(true, true)
-                                                        .Where(genepack => genepack.GeneSet.GenesListForReading.Count > 1)
+            IEnumerable<Genepack> genepacks = _genepackManipulation.FilterGenepacks(_assembler.GetGenepacks(true, true))
                                                         .OrderByDescending(genepack => genepack.GeneSet.ArchitesTotal)
                                                         .ThenByDescending(genepack => genepack.GeneSet.ComplexityTotal)
                                                         .ThenBy(genepack => genepack.GeneSet.MetabolismTotal);
@@ -93,22 +93,14 @@ namespace GenepackManipulation.Dialogs
                     }
                     else
                     {
-                        List<ThingDefCountClass> ingredients = new List<ThingDefCountClass>
-                        {
-                            // Glitterworld medicine
-                            new ThingDefCountClass(ThingDefOf.MedicineUltratech, 1) 
-                        };
 
-                        if (_selectedGenepack.GeneSet.ArchitesTotal > 0)
-                            // Archite Capsules for Archite genes
-                            ingredients.Add(new ThingDefCountClass(ThingDefOf.ArchiteCapsule, _selectedGenepack.GeneSet.ArchitesTotal)); 
 
                         GenepackManipulationJobData jobData = new GenepackManipulationJobData()
                         {
                             Genepack = _selectedGenepack,
                             Manipulation = _genepackManipulation,
                             TicksRequired = _selectedGenepack.GeneSet.ComplexityTotal * 2500,
-                            RequiredIngredients = ingredients
+                            RequiredIngredients = _genepackManipulation.CalculateRequiredIngredients(new List<Genepack> {_selectedGenepack})
                         };
 
                         _genepackManipulatorComponent.SetJob(jobData);

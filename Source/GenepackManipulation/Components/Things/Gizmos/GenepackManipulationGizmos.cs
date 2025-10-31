@@ -1,13 +1,13 @@
-﻿using GenepackManipulation.Dialogs;
-using GenepackManipulation.Jobs.Data;
+﻿using GenepackManipulation.Defs;
 using RimWorld;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using Verse;
 
 namespace GenepackManipulation.Components.Things.Gizmos
 {
-    public static class GenepackManipulationGizmos
+    internal static class GenepackManipulationGizmos
     {
 
         private static Command_Action DisableIfUnavailable(this Command_Action action, Building_GeneAssembler assembler)
@@ -36,40 +36,69 @@ namespace GenepackManipulation.Components.Things.Gizmos
             return action;
         }
 
-        public static Command_Action MakePruneGizmo(Building_GeneAssembler assembler)
+        internal static Command_Action MakeMultiManipulationGizmo(Building_GeneAssembler assembler)
         {
             return new Command_Action
             {
-                defaultLabel = "GenepackManipulationPruneGizmoLabel".Translate(),
-                defaultDesc = "GenepackManipulationPruneGizmoDesc".Translate(),
-                icon = ContentFinder<Texture2D>.Get("UI/Gizmos/samv522.genepackrefinment.prune"),
+                defaultLabel = "GenepackManipulationMuliGizmoLabel".Translate(),
+                defaultDesc = "GenepackManipulationMuliGizmoDesc".Translate(),
+                icon = ContentFinder<Texture2D>.Get("UI/Gizmos/SamV522.genepackmanipulation.manipulate"),
                 action = () =>
                 {
-                    Find.WindowStack.Add(new GenepackManipulationDialog(assembler, new Manipulations.Prune(assembler)));
+                    List<FloatMenuOption> options = new List<FloatMenuOption>();
+
+                    foreach (var def in DefDatabase<ManipulationDef>.AllDefs)
+                    {
+                        if (def.requiredResearch.All(research => research.IsFinished))
+                        {
+                            options.Add(new FloatMenuOption(def.name, () =>
+                            {
+                                var manipulation = Manipulations.ManipulationFactory.Create(assembler, def);
+                                if (manipulation != null)
+                                {
+                                    Find.WindowStack.Add(manipulation.GetDialog());
+                                }
+                            }));
+                        }
+                        else
+                            continue;
+                    }
+
+                    if (options.Count == 0)
+                    {
+                        Log.Warning("[GenepackManipulation] No available manipulations to choose from, either def is incorrect or the research is not complete?");
+                        return;
+                    }
+
+                    Find.WindowStack.Add(new FloatMenu(options));
                 }
             }.DisableIfUnavailable(assembler);
         }
 
-        public static Command_Action MakeSplitGizmo(Building_GeneAssembler assembler)
+        internal static Command_Action MakeManipulationGizmo(Building_GeneAssembler assembler, ManipulationDef manipulationDef)
         {
             return new Command_Action
             {
-                defaultLabel = "GenepackManipulationSplitGizmoLabel".Translate(),
-                defaultDesc = "GenepackManipulationPruneGizmoDesc".Translate(),
-                icon = ContentFinder<Texture2D>.Get("UI/Gizmos/samv522.genepackrefinment.split"),
+                defaultLabel = manipulationDef.name,
+                defaultDesc = manipulationDef.gizmoDescription,
+                icon = ContentFinder<Texture2D>.Get(manipulationDef.iconPath),
                 action = () =>
                 {
-                    Find.WindowStack.Add(new GenepackManipulationDialog(assembler, new Manipulations.Split(assembler)));
+                    var manipulation = Manipulations.ManipulationFactory.Create(assembler, manipulationDef);
+                    if (manipulation != null)
+                    {
+                        Find.WindowStack.Add(manipulation.GetDialog());
+                    }
                 }
             }.DisableIfUnavailable(assembler);
         }
 
-        public static Command_Action MakeCancelGizmo(Building_GeneAssembler assembler, GenepackManipulationJobData jobData)
+        internal static Command_Action MakeCancelGizmo(Building_GeneAssembler assembler)
         {
             return new Command_Action
             {
                 defaultLabel = "GenepackManipulationCancelGizmoLabel".Translate(),
-                defaultDesc = "GenepackManipulationCancelDescGizmoLabel".Translate(),
+                defaultDesc = "GenepackManipulationCancelGizmoDesc".Translate(),
                 icon = ContentFinder<Texture2D>.Get("UI/Designators/Cancel"),
                 hotKey = KeyBindingDefOf.Designator_Cancel,
                 action = () =>

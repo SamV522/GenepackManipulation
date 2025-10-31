@@ -1,4 +1,5 @@
-﻿using GenepackManipulation.Extensions;
+﻿using GenepackManipulation.Defs;
+using GenepackManipulation.Extensions;
 using RimWorld;
 using System;
 using System.Collections.Generic;
@@ -30,12 +31,7 @@ namespace GenepackManipulation.Manipulations
         [Obsolete("For Scribe use only")]
         public Split() : base() { } // For Scribe
 
-        public Split(Building_GeneAssembler assembler) : base(assembler)
-        {
-            Name = "GenepackManipulationSplit".Translate();
-            Verb = "GenepackManipulationSplitVerb".Translate();
-            Gerund = "GenepackManipulationSplitGerund".Translate();
-        }
+        public Split(Building_GeneAssembler assembler, ManipulationDef def) : base(assembler, def) { }
 
         public override void Execute(Genepack genepack)
         {

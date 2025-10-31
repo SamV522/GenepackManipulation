@@ -14,9 +14,9 @@ namespace GenepackManipulation.Components.Things
         private Building_GeneAssembler assembler;
         private GenepackManipulationJobData activeJob;
 
-        public bool HasJob() => activeJob != null;
+        internal bool HasJob() => activeJob != null;
 
-        public GenepackManipulationJobData GetJob() => activeJob;
+        internal GenepackManipulationJobData GetJob() => activeJob;
 
         public override void PostSpawnSetup(bool respawningAfterLoad)
         {
@@ -24,7 +24,7 @@ namespace GenepackManipulation.Components.Things
             assembler = parent as Building_GeneAssembler;
         }
 
-        public void SetJob(GenepackManipulationJobData jobData)
+        internal void SetJob(GenepackManipulationJobData jobData)
         {
             if (HasJob())
             {
@@ -35,33 +35,43 @@ namespace GenepackManipulation.Components.Things
             activeJob = jobData;
         }
 
-        public void ClearJob()
+        internal void ClearJob()
         {
             activeJob = null;
             assembler.innerContainer.TryDropAll(assembler.Position, assembler.Map, ThingPlaceMode.Near);
         }
 
-        public override IEnumerable<Gizmo> CompGetGizmosExtra()
+		public override IEnumerable<Gizmo> CompGetGizmosExtra()
         {
             foreach (var gizmo in base.CompGetGizmosExtra())
                 yield return gizmo;
 
-            if (ResearchDefOfLocal.GenePruning.IsFinished)
-                yield return GenepackManipulationGizmos.MakePruneGizmo(assembler);
-
-            if (ResearchDefOfLocal.GeneSplitting.IsFinished)
-                yield return GenepackManipulationGizmos.MakeSplitGizmo(assembler);
+            IEnumerable<ManipulationDef> availableManipulations = DefDatabase<ManipulationDef>.AllDefs
+                .Where(def => def.requiredResearch.All(research => research.IsFinished));
+            
+            // If there are more than 2 available manipulations, show the slightly less glamorous multi-manipulation gizmo
+            if (availableManipulations.Count() > 2)
+            {
+                yield return GenepackManipulationGizmos.MakeMultiManipulationGizmo(assembler);
+            }
+            else
+            {
+                foreach (ManipulationDef genepackManipulationDef in availableManipulations)
+                {
+                    yield return GenepackManipulationGizmos.MakeManipulationGizmo(assembler, genepackManipulationDef);
+                }
+            }
 
             if (HasJob())
-                yield return GenepackManipulationGizmos.MakeCancelGizmo(assembler, activeJob);
+                yield return GenepackManipulationGizmos.MakeCancelGizmo(assembler);
         }
 
-        public bool CanManipulateNow()
+        internal bool CanManipulateNow()
         {
             return parent.Faction == Faction.OfPlayer && assembler.PowerOn == true && !assembler.Working;
         }
 
-        public void ExecuteManipulation()
+        internal void ExecuteManipulation()
         {
             activeJob.Manipulation.Execute(activeJob.Genepack);
             assembler.innerContainer.ClearAndDestroyContents();
@@ -69,7 +79,7 @@ namespace GenepackManipulation.Components.Things
             ClearJob();
         }
 
-        public List<ThingDefCountClass> RequiredIngredients()
+        internal List<ThingDefCountClass> RequiredIngredients()
         {
             if (!HasJob())
                 return new List<ThingDefCountClass>();
@@ -80,7 +90,7 @@ namespace GenepackManipulation.Components.Things
         }
 
 
-        public bool NeedsIngredients()
+        internal bool NeedsIngredients()
         {
             if (!HasJob())
                 return false;
@@ -88,7 +98,7 @@ namespace GenepackManipulation.Components.Things
             return RequiredIngredients().Any();
         }
 
-        public override void PostExposeData()
+		public override void PostExposeData()
         {
             base.PostExposeData();
             Scribe_References.Look(ref assembler, "assembler");
