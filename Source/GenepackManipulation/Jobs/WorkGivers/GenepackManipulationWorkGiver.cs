@@ -18,20 +18,37 @@ namespace GenepackManipulation.Jobs
             Building_GeneAssembler assembler = t as Building_GeneAssembler;
             if (assembler == null) return false;
 
-            var comp = assembler.TryGetComp<GenepackManipulatorComponent>();
-            if (!comp.CanManipulateNow() || !comp.HasJob()) return false;
+            // Check if the assembler has a GenepackManipulatorComponent and if it can manipulate now
+            var manipulatorComp = assembler.TryGetComp<GenepackManipulatorComponent>();
+            if (!manipulatorComp.CanManipulateNow() || !manipulatorComp.HasJob()) return false;
 
-            var jobData = comp.GetJob();
+            // Check if there is a job assigned to the assembler
+            var jobData = manipulatorComp.GetJob();
             if (jobData == null) return false;
+
+            // Validate job data
+            if (!jobData.TryValidate(out var jobDataValidationErrors))
+            {
+                Log.Error($"[GenepackManipulation] Invalid job data for assembler {assembler}. Cannot assign GenepackManipulation job:\r\n" +
+                          $"{string.Join("\r\n",jobDataValidationErrors)}");
+                manipulatorComp.ClearJob();
+                return false;
+            }
 
             if (!pawn.CanReserve(t, 1, -1, null, forced)) return false;
 
             // if the genepack is in a genebank
             foreach(var genepack in jobData.Genepacks)
             {
-                if (genepack.ParentHolder is CompGenepackContainer genebank && genebank.parent != null)
+                if (genepack == null)
+                {
+                    Log.Error("[GenepackManipulation] One of the genepacks to manipulate is null! Cannot assign GenepackManipulation job.");
+                    return false;
+                }
+
+                if (genepack.ParentHolder is CompGenepackContainer genebankContainer && genebankContainer.parent != null)
                 // reserve the genebank instead - reserving the genepack itself can cause issues if it is in a genebank
-                if (!pawn.CanReserve(genebank.parent, 1, -1, null, false))
+                if (!pawn.CanReserve(genebankContainer.parent, 1, -1, null, false))
                 {
                     Log.Warning($"[GenepackManipulation] Pawn {pawn} cannot reserve genepack {genepack}. Cannot assign GenepackManipulation job.");
                     return false;
